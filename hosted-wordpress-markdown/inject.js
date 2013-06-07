@@ -20,7 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-//should we bail form our main function (i.e. is this a wordpress page or not)
 var bailFromMain = function()
 {
     if(!document.forms['post'])
@@ -41,7 +40,6 @@ var isMarkdownTabSelected = function()
     return document.getElementById('wp-content-wrap').className.indexOf('markdown-active') !== -1
 };
 
-//can put new scripts before or after an existing onclick attribute's script
 var pulseStormInjectOnClick = function(name, before, after)
 {
     var element = document.getElementById(name);
@@ -67,7 +65,6 @@ var pulseStormInjectOnClick = function(name, before, after)
     element.outerHTML = element.outerHTML.replace(/onclick=".+?"/,'onclick="'+before+script_original+after+'"');        
 };
 
-//set to pass data to page from the sandbox
 var setOnPage = function(name, value)
 {
     var element = document.getElementById(name);
@@ -82,7 +79,6 @@ var setOnPage = function(name, value)
     element.setAttribute('value', value);        
 };
 
-//getting to get data from page
 var getOnPage = function(name)
 {
     var element = document.getElementById(name);
@@ -224,7 +220,6 @@ var handlerSetupForPublishButton = function()
 
 var main = function()
 {
-    console.log("started main");
     if(bailFromMain())
     {
         return;
@@ -238,11 +233,6 @@ var main = function()
     
     addRemoveMarkdownClassJavascriptToOriginalTabs();
     
-    //might not be able to use the function below
-    //ed.show() strips content of all line endings    
-    //addShowEditorWhenClickingOnTextJavascript();
-    
-    //may want a onclick inject that autowraps a "is coming from wordpress" if statement
     addTwitchToHtmlJavascriptToHtmlTab();
     
     addMarkdownSavingCodeToVisualOnClickAttribute();
