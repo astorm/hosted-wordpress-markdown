@@ -25,7 +25,9 @@ Because debugging and writing Javascript in string files is tedious, each code f
 
     src/js/*.js
     
-[... explain build system here after you've written it ...]    
+[... explain build system here after you've written it ... ]
+
+https://npmjs.org/package/uglify-js
     
     
 
