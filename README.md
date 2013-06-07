@@ -17,7 +17,13 @@ There's also a packaged chrome extension in
 
     builds/chrome-extension.crx
 
-which you should be able to load directly. 
+To install this file
+
+1. Download the <a href="https://github.com/astorm/hosted-wordpress-markdown/blob/master/builds/chrome-extension.crx?raw=true">raw binary</a>
+
+2. Open the `chrome://extensions/` page/preference window in Google Chrome
+
+3. Drag and drop the `chrome-extension.crx` file into your browser
 
 Building inject.js
 --------------------------------------------------
