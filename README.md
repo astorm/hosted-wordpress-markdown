@@ -5,9 +5,14 @@ Google Chrome extension to inject a markdown aware editor into WordPress.com's m
 
 This is beta software, use at your own risk.
 
+Install
+--------------------------------------------------
+
+
+
 Building inject.js
 --------------------------------------------------
-Because WordPress uses a number of `onclick` attribute handlers and events setup in the Chrome plugin Sandbox fire **after** these `onclick` handlers, there are times where we need to inject additional code directly into the DOM. This is done with a syntax that looks like
+Because WordPress uses a number of `onclick` attribute handlers, and events setup in the Chrome plugin Sandbox fire **after** these `onclick` handlers, there are times where we need to inject additional code directly into the DOM. This is done with a syntax that looks like
 
     var addTwitchToHtmlJavascriptToHtmlTab = function()
     {
@@ -37,17 +42,20 @@ Lint for Javascript Files
 --------------------------------------------------
 We're passing all the Javascript fragments though JSLint (via NPM's nodelint)
 
-    $ nodelint --config src/js/config.js src/js/*.js
+    $ nodelint --config config/config.js src/js/*.js
 
+There's a bash script to run the lint at
 
+    bin/run-list.bash
+    
 Versions of Markdown
 --------------------------------------------------
 Our current version to convert markdown into HTML before saving is Pagedown.
 
-    https://code.google.com/p/pagedown/
+https://code.google.com/p/pagedown/
     
 We're also using to-markdown to convert the saved HTML back into Markdown for editing
 
-    https://github.com/domchristie/to-markdown
+https://github.com/domchristie/to-markdown
     
-Computability problems are anticipated.  Please report any problems in the GitHub issue tracker, and if you know of a version of Markdown implemented in Javascript that can be safely round tripped, please let us know.  
+Compatibility problems are anticipated.  Please [report any problems in the GitHub issue tracker](https://github.com/astorm/hosted-wordpress-markdown/issues/8), and if you know of a version of Markdown implemented in Javascript that can be safely round tripped, please let us know.  
