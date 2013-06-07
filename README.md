@@ -7,8 +7,17 @@ This is beta software, use at your own risk.
 
 Install
 --------------------------------------------------
+The file for installation are located in the 
 
+    chrome-extension
+    
+directory.  You may install the extension by following the <a head="https://developer.chrome.com/extensions/getstarted.html">Load the extension instructions on this page</a>. 
 
+There's also a packaged chrome extension in 
+
+    builds/chrome-extension.crx
+
+which you should be able to load directly. 
 
 Building inject.js
 --------------------------------------------------
