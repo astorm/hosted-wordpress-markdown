@@ -140,13 +140,14 @@ var addRemoveMarkdownClassJavascriptToOriginalTabs = function()
     pulseStormInjectOnClick('content-html',js,'');
 }
 
+//need to do this manually to avoid "editor is hidden" problem
 var addShowEditorWhenClickingOnTextJavascript = function()
 {
     var js = 'var ed = tinyMCE.get(\'content\');if(ed){ed.show()};';
     pulseStormInjectOnClick('content-html',js,'');
 }
 
-//need to do this manually to avoid "editor is hidden" problem
+
 var addTwitchToHtmlJavascriptToHtmlTab = function()
 {
     var js = 'dom=tinymce.DOM;dom.removeClass(\'wp-content-wrap\', \'tmce-active\');dom.addClass(\'wp-content-wrap\', \'html-active\');setUserSetting(\'editor\', \'html\');';			
@@ -162,7 +163,7 @@ var addMarkdownSavingCodeToVisualOnClickAttribute = function()
 
 var addTinyMceSettingCodeToVisualOnClickAttribute = function()
 {
-    var js = '(function(){e=document.getElementById(\'pulseStormHtmlHoldingArea\');if(!e){return}if(e.value==\'no_action\'){return}if(!e.value){return}document.forms[\'post\'][\'content\']=e.value;ed=tinyMCE.get(\'content\');if(ed){ed.setContent(e.value)}e.value=\'no_action\';})()';
+    var js = 'setTimeout(function(){e=document.getElementById(\'pulseStormHtmlHoldingArea\');if(!e){console.log(\'no element\');return}if(e.value==\'no_action\'){console.log(\'no value is no_action\');return}if(!e.value){console.log(\'no e.value\');return}document.forms[\'post\'][\'content\']=e.value;ed=tinyMCE.get(\'content\');if(ed){console.log(\'founs editor\');ed.setContent(e.value)}e.value=\'no_action\'},1000);';
     pulseStormInjectOnClick('content-tmce','',js);
 };
 
