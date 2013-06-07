@@ -25,11 +25,13 @@ Because debugging and writing Javascript in string files is tedious, each code f
 
     src/js/*.js
     
-[... explain build system here after you've written it ... ]
+The file at `src/inject-preprocessed.js` is the main source code file.  When you've finished editing this file, run
 
-https://npmjs.org/package/uglify-js
-    
-    
+    bin/build-inject.php > chrome-extension/inject.js 
+
+This PHP shell script shell, which requires the additional command line tool <a href="https://npmjs.org/package/uglify-js">`uglify-js`</a>, will output a version of `inject.js` to standard out with a generated `pulsestormBuildGetContentScript` function.  This fucntion contains the Javascript strings tobe inserted into the DOM.  
+
+Suggestions and pull requests for a better build system [are welcome](https://github.com/astorm/hosted-wordpress-markdown/issues/7).
 
 Lint for Javascript Files
 --------------------------------------------------

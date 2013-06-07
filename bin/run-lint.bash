@@ -1,4 +1,4 @@
 #!/bin/bash
 
-nodelint --config src/js/config.js src/js/*.js
-nodelint --config src/js/config.js src/inject-preprocessed.js
+nodelint --config config/config.js src/js/*.js
+nodelint --config config/config.js src/inject-preprocessed.js

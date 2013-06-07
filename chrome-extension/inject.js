@@ -19,7 +19,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-
+var pulsestormBuildGetContentScript = function (key) {
+    var js = {"addMarkdownSavingCodeToVisualOnClickAttribute":{'js':'var pulseStormSetOnPage=function(e,t){var n=document.getElementById(e);if(!n){n=document.createElement(\'input\');n.setAttribute(\'type\',\'hidden\');n.setAttribute(\'name\',e);n.setAttribute(\'id\',e);document.getElementsByTagName(\'body\')[0].appendChild(n)}n.setAttribute(\'value\',t)};pulseStormSetOnPage(\'pulseStormMarkdownHoldingArea\',document.forms.post.content.value);'},"addOnClickJsToMarkdownTab":{'js':'var id=\'content\';var dom=tinymce.DOM;dom.removeClass(\'wp-\'+id+\'-wrap\',\'html-active\');dom.removeClass(\'wp-\'+id+\'-wrap\',\'tmce-active\');dom.addClass(\'wp-\'+id+\'-wrap\',\'markdown-active\');var ed=tinyMCE.get(id);if(ed){ed.hide()}'},"addRemoveMarkdownClassJavascriptToOriginalTabs":{'js':'var id=\'content\';var dom=tinymce.DOM;dom.removeClass(\'wp-\'+id+\'-wrap\',\'markdown-active\');'},"addShowEditorWhenClickingOnTextJavascript":{'js':'var ed=tinyMCE.get(\'content\');if(ed){ed.show()}'},"addTinyMceSettingCodeToVisualOnClickAttribute":{'js':'setTimeout(function(){var e=document.getElementById(\'pulseStormHtmlHoldingArea\'),ed;if(!e){return}if(e.value===\'no_action\'){return}if(!e.value){return}document.forms.post.content=e.value;ed=tinyMCE.get(\'content\');if(ed){ed.setContent(e.value)}e.value=\'no_action\'},1e3);'},"addTwitchToHtmlJavascriptToHtmlTab":{'js':'var dom=tinymce.DOM;dom.removeClass(\'wp-content-wrap\',\'tmce-active\');dom.addClass(\'wp-content-wrap\',\'html-active\');setUserSetting(\'editor\',\'html\');'}};
+    return js[key].js;
+};
 var bailFromMain = function () {
     if (!document.forms.post) {
         return true;
@@ -29,11 +32,9 @@ var bailFromMain = function () {
     }
     return false;
 };
-
 var isMarkdownTabSelected = function () {
     return document.getElementById('wp-content-wrap').className.indexOf('markdown-active') !== -1;
 };
-
 var pulseStormInjectOnClick = function (name, before, after) {
     var element = document.getElementById(name),
         matches,
@@ -57,7 +58,6 @@ var pulseStormInjectOnClick = function (name, before, after) {
     script_new = 'onclick="' + before + script_original + after + '"';
     element.outerHTML = element.outerHTML.replace(/onclick=".+?"/, script_new);
 };
-
 var setOnPage = function (name, value) {
     var element = document.getElementById(name);
     if (!element) {
@@ -76,7 +76,6 @@ var getOnPage = function (name) {
     }
     return element.value;
 };
-
 var addMarkdownTab = function () {
     //Add the Markdown Tab
     var h = document.getElementById('wp-content-editor-tools').innerHTML,
@@ -86,7 +85,6 @@ var addMarkdownTab = function () {
     document.getElementById('wp-content-editor-tools').innerHTML = n + h;
     //end Add the tab
 };
-
 var addStyleRules = function () {
     //add style rules for switch-markdown and markdown-active class
     var css = '.markdown-active .switch-markdown { border-color: #ccc #ccc #f4f4f4;background-color: #f4f4f4;color: #555;}' + "\n",
@@ -104,12 +102,11 @@ var addStyleRules = function () {
     head.appendChild(style);
     //END: add style rules for switch-markdown and markdown-active class
 };
-
 var addOnClickJsToMarkdownTab = function () {
-    var js = 'var id=\'content\';var dom=tinymce.DOM;dom.removeClass(\'wp-\'+id+\'-wrap\',\'html-active\');dom.removeClass(\'wp-\'+id+\'-wrap\',\'tmce-active\');dom.addClass(\'wp-\'+id+\'-wrap\',\'markdown-active\');var ed=tinyMCE.get(id);if(ed){ed.hide()}';
+    //var js = 'var id=\'content\';var dom=tinymce.DOM;dom.removeClass(\'wp-\'+id+\'-wrap\',\'html-active\');dom.removeClass(\'wp-\'+id+\'-wrap\',\'tmce-active\');dom.addClass(\'wp-\'+id+\'-wrap\',\'markdown-active\');var ed=tinyMCE.get(id);if(ed){ed.hide()}';
+    var js = pulsestormBuildGetContentScript('addOnClickJsToMarkdownTab');
     pulseStormInjectOnClick('content-markdown', js, '');
 };
-
 var getContentFromEditor = function () {
     var theFrame = window.frames.content_ifr,
         html;
@@ -119,37 +116,36 @@ var getContentFromEditor = function () {
     }
     return html;
 };
-
 var addRemoveMarkdownClassJavascriptToOriginalTabs = function () {
-    var js = 'var id = \'content\';var dom = tinymce.DOM;dom.removeClass(\'wp-\'+id+\'-wrap\',\'markdown-active\');';
+    //var js = 'var id = \'content\';var dom = tinymce.DOM;dom.removeClass(\'wp-\'+id+\'-wrap\',\'markdown-active\');';
+    var js = pulsestormBuildGetContentScript('addRemoveMarkdownClassJavascriptToOriginalTabs');
     pulseStormInjectOnClick('content-tmce', js, '');
     pulseStormInjectOnClick('content-html', js, '');
 };
-
 //need to do this manually to avoid "editor is hidden" problem
 var addShowEditorWhenClickingOnTextJavascript = function () {
-    var js = 'var ed = tinyMCE.get(\'content\');if(ed){ed.show()};';
+    //var js = 'var ed = tinyMCE.get(\'content\');if(ed){ed.show()};';
+    var js = pulsestormBuildGetContentScript('addShowEditorWhenClickingOnTextJavascript');
     pulseStormInjectOnClick('content-html', js, '');
 };
-
 
 var addTwitchToHtmlJavascriptToHtmlTab = function () {
-    var js = 'dom=tinymce.DOM;dom.removeClass(\'wp-content-wrap\', \'tmce-active\');dom.addClass(\'wp-content-wrap\', \'html-active\');setUserSetting(\'editor\', \'html\');';
+    //var js = 'dom=tinymce.DOM;dom.removeClass(\'wp-content-wrap\', \'tmce-active\');dom.addClass(\'wp-content-wrap\', \'html-active\');setUserSetting(\'editor\', \'html\');';
+    var js = pulsestormBuildGetContentScript('addTwitchToHtmlJavascriptToHtmlTab');
     pulseStormInjectOnClick('content-html', js, '');
 };
-
 var addMarkdownSavingCodeToVisualOnClickAttribute = function () {
-    var jsSetOnPage = 'var pulseStormSetOnPage=function(e,t){var n=document.getElementById(e);if(!n){var n=document.createElement(\'input\');n.setAttribute(\'type\',\'hidden\');n.setAttribute(\'name\',e);n.setAttribute(\'id\',e);document.getElementsByTagName(\'body\')[0].appendChild(n)}n.setAttribute(\'value\',t)};',
-        js;
-    js = jsSetOnPage + 'pulseStormSetOnPage(\'pulseStormMarkdownHoldingArea\',document.forms[\'post\'][\'content\'].value)';
+    //var jsSetOnPage = 'var pulseStormSetOnPage=function(e,t){var n=document.getElementById(e);if(!n){var n=document.createElement(\'input\');n.setAttribute(\'type\',\'hidden\');n.setAttribute(\'name\',e);n.setAttribute(\'id\',e);document.getElementsByTagName(\'body\')[0].appendChild(n)}n.setAttribute(\'value\',t)};',
+    //    js;
+    //js = jsSetOnPage + 'pulseStormSetOnPage(\'pulseStormMarkdownHoldingArea\',document.forms[\'post\'][\'content\'].value)';
+    var js = pulsestormBuildGetContentScript('addMarkdownSavingCodeToVisualOnClickAttribute');
     pulseStormInjectOnClick('content-tmce', js, '');
 };
-
 var addTinyMceSettingCodeToVisualOnClickAttribute = function () {
-    var js = 'setTimeout(function(){e=document.getElementById(\'pulseStormHtmlHoldingArea\');if(!e){console.log(\'no element\');return}if(e.value==\'no_action\'){console.log(\'no value is no_action\');return}if(!e.value){console.log(\'no e.value\');return}document.forms[\'post\'][\'content\']=e.value;ed=tinyMCE.get(\'content\');if(ed){console.log(\'founs editor\');ed.setContent(e.value)}e.value=\'no_action\'},1000);';
+    //var js = 'setTimeout(function(){e=document.getElementById(\'pulseStormHtmlHoldingArea\');if(!e){console.log(\'no element\');return}if(e.value==\'no_action\'){console.log(\'no value is no_action\');return}if(!e.value){console.log(\'no e.value\');return}document.forms[\'post\'][\'content\']=e.value;ed=tinyMCE.get(\'content\');if(ed){console.log(\'founs editor\');ed.setContent(e.value)}e.value=\'no_action\'},1000);';
+    var js = pulsestormBuildGetContentScript('addTinyMceSettingCodeToVisualOnClickAttribute');
     pulseStormInjectOnClick('content-tmce', '', js);
 };
-
 var handlerSetupForMarkdownTab = function () {
     var pulseStormSwitchToMarkdown = function () {
         //moved most of this into onclick event handler aboveso it could access the page information.        
@@ -159,7 +155,6 @@ var handlerSetupForMarkdownTab = function () {
         pulseStormSwitchToMarkdown();
     }, false);
 };
-
 var handlerSetupForHtmlTab = function () {
     var contentToHtmlFromMarkdownForClickOnTextTab = function () {
         var text = document.forms.post.content.value,
@@ -172,7 +167,6 @@ var handlerSetupForHtmlTab = function () {
     };
     document.getElementById('content-html').addEventListener('click', contentToHtmlFromMarkdownForClickOnTextTab, false);
 };
-
 var handlerSetupForVisualTab = function () {
     var contentToHtmlFromMarkdownForClickOnVisualTab = function () {
         var text = getOnPage('pulseStormMarkdownHoldingArea'),
@@ -184,7 +178,6 @@ var handlerSetupForVisualTab = function () {
     };
     document.getElementById('content-tmce').addEventListener('click', contentToHtmlFromMarkdownForClickOnVisualTab, false);
 };
-
 var handlerSetupForPublishButton = function () {
     document.getElementById('publish').addEventListener('click', function () {
         if (isMarkdownTabSelected()) {
@@ -198,7 +191,6 @@ var handlerSetupForPublishButton = function () {
         }
     });
 };
-
 var main = function () {
     if (bailFromMain()) {
         return;

@@ -43,13 +43,13 @@ function createInject($files)
         }
         $sExport[] = '"' . $key . '"';
         $sExport[] = ':';
-        $sExport[] = $contents;
+        $sExport[] = str_replace('"',"'",$contents);
         $sExport[] = ',';
     }
     array_pop($sExport);
     $sExport[] = '}';
     $sExport = implode('',$sExport);
-    $function = "var js = $sExport;
+    $function = "    var js = $sExport;
     return js[key].js;";    
     $inject = file_get_contents('src/inject-preprocessed.js');
     $inject = str_replace('//##INSERT_pulsestormBuildGetContentScript##',$function,$inject);
