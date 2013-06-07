@@ -1,24 +1,24 @@
-The MIT License (MIT)
-
-Copyright (c) 2013 Pulse Storm LLC. 
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in
-all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-THE SOFTWARE.
+// The MIT License (MIT)
+// 
+// Copyright (c) 2013 Pulse Storm LLC. 
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+// 
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 //should we bail form our main function (i.e. is this a wordpress page or not)
 var bailFromMain = function()
@@ -34,7 +34,12 @@ var bailFromMain = function()
     }
 
     return false;
-}
+};
+
+var isMarkdownTabSelected = function()
+{
+    return document.getElementById('wp-content-wrap').className.indexOf('markdown-active') !== -1
+};
 
 //can put new scripts before or after an existing onclick attribute's script
 var pulseStormInjectOnClick = function(name, before, after)
@@ -75,7 +80,7 @@ var setOnPage = function(name, value)
         document.getElementsByTagName('body')[0].appendChild(element);        
     }
     element.setAttribute('value', value);        
-}
+};
 
 //getting to get data from page
 var getOnPage = function(name)
@@ -86,7 +91,7 @@ var getOnPage = function(name)
         return false;
     }
     return element.value;
-}
+};
 
 var addMarkdownTab = function()
 {
@@ -95,7 +100,7 @@ var addMarkdownTab = function()
     n = '<a id="content-markdown" class="wp-switch-editor switch-markdown" onclick=" ">Markdown</a>';
     document.getElementById('wp-content-editor-tools').innerHTML = n + h;
     //end Add the tab
-}
+};
 
 var addStyleRules = function()
 {
@@ -113,7 +118,7 @@ var addStyleRules = function()
     }
     head.appendChild(style);
     //END: add style rules for switch-markdown and markdown-active class
-}
+};
 
 var addOnClickJsToMarkdownTab = function()
 {
@@ -165,8 +170,61 @@ var addTinyMceSettingCodeToVisualOnClickAttribute = function()
     pulseStormInjectOnClick('content-tmce','',js);
 };
 
+var handlerSetupForMarkdownTab = function()
+{
+    var pulseStormSwitchToMarkdown = function(){
+        //moved most of this into onclick event handler aboveso it could access the page information.        
+        document.forms['post']['content'].value = toMarkdown( getContentFromEditor() );
+    };    
+    document.getElementById('content-markdown').addEventListener('click', function(){
+        pulseStormSwitchToMarkdown();
+    },false);
+}
+
+var handlerSetupForHtmlTab = function()
+{
+    var contentToHtmlFromMarkdownForClickOnTextTab = function()
+    {
+        var text = document.forms['post']['content'].value
+        var converter = new Markdown.Converter();
+        var html = converter.makeHtml(text);
+        
+        // setOnPage('pulseStormMarkdownHoldingArea', html);
+        document.forms['post']['content'].value = html;            
+    };
+    document.getElementById('content-html').addEventListener('click',contentToHtmlFromMarkdownForClickOnTextTab,false);    
+}
+
+var handlerSetupForVisualTab = function()
+{
+    var contentToHtmlFromMarkdownForClickOnVisualTab = function()
+    {
+        var text = getOnPage('pulseStormMarkdownHoldingArea');
+        var converter = new Markdown.Converter();
+        var html = converter.makeHtml(text);
+        setOnPage('pulseStormHtmlHoldingArea',html);
+    };    
+    document.getElementById('content-tmce').addEventListener('click',contentToHtmlFromMarkdownForClickOnVisualTab,false);
+};
+
+var handlerSetupForPublishButton = function()
+{
+    document.getElementById('publish').addEventListener('click', function(){
+        if(isMarkdownTabSelected())
+        {
+            var text = document.forms['post']['content'].value;
+            var converter = new Markdown.Converter();
+            var html = converter.makeHtml(text);
+            
+            // setOnPage('pulseStormMarkdownHoldingArea', html);
+            document.forms['post']['content'].value = html;            
+        }
+    });
+};
+
 var main = function()
 {
+    console.log("started main");
     if(bailFromMain())
     {
         return;
@@ -190,37 +248,13 @@ var main = function()
     addMarkdownSavingCodeToVisualOnClickAttribute();
     
     addTinyMceSettingCodeToVisualOnClickAttribute();
-    getContentFromEditor();
     
-    //function to change our HTML content into markdown content
-    var pulseStormSwitchToMarkdown = function(){
-        //moved most of this into onclick event handler aboveso it could access the page information.        
-        document.forms['post']['content'].value = toMarkdown( getContentFromEditor() );
-    };    
-    document.getElementById('content-markdown').addEventListener('click', function(){
-        pulseStormSwitchToMarkdown();
-    },false);
-    //END: function to change our HTML content into markdown content    
+    handlerSetupForMarkdownTab();
     
-    var contentToHtmlFromMarkdownForClickOnTextTab = function()
-    {
-        var text = document.forms['post']['content'].value
-        var converter = new Markdown.Converter();
-        var html = converter.makeHtml(text);
-        
-        // setOnPage('pulseStormMarkdownHoldingArea', html);
-        document.forms['post']['content'].value = html;            
-    };
-    document.getElementById('content-html').addEventListener('click',contentToHtmlFromMarkdownForClickOnTextTab,false);
-     
-    var contentToHtmlFromMarkdownForClickOnVisualTab = function()
-    {
-        var text = getOnPage('pulseStormMarkdownHoldingArea');
-        var converter = new Markdown.Converter();
-        var html = converter.makeHtml(text);
-        setOnPage('pulseStormHtmlHoldingArea',html);
-    };
+    handlerSetupForHtmlTab();
+ 
+    handlerSetupForVisualTab();
     
-    document.getElementById('content-tmce').addEventListener('click',contentToHtmlFromMarkdownForClickOnVisualTab,false);
+    handlerSetupForPublishButton();
 };
 main();
