@@ -7,7 +7,7 @@ This is beta software, use at your own risk.
 
 Install
 --------------------------------------------------
-The file for installation are located in the 
+The files for installation are located in the 
 
     chrome-extension
     
