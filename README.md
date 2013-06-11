@@ -27,7 +27,7 @@ To install this file
 
 Building inject.js
 --------------------------------------------------
-Because WordPress uses a number of `onclick` attribute handlers, and events setup in the Chrome plugin Sandbox fire **after** these `onclick` handlers, there are times where we need to inject additional code directly into the DOM. This is done with a syntax that looks like
+Because WordPress uses a number of `onclick` attribute handlers, and events setup in the Chrome plugin sandbox fire **after** these `onclick` handlers, there are times where we need to inject additional code directly into the DOM. This is done with a syntax that looks like
 
     var addTwitchToHtmlJavascriptToHtmlTab = function()
     {
