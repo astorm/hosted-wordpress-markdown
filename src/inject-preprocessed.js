@@ -145,10 +145,31 @@ var addTinyMceSettingCodeToVisualOnClickAttribute = function () {
     var js = pulsestormBuildGetContentScript('addTinyMceSettingCodeToVisualOnClickAttribute');
     pulseStormInjectOnClick('content-tmce', '', js);
 };
+var fixHtmlToMarkdownCodeLine = function (line) {
+    //if it's not a code line, return it
+    if (line.indexOf("    ") === -1 && line.indexOf("\t") === -1) {
+        return line;
+    }
+    return line.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+};
+var fixHtmlToMarkdownCodeLines = function (html) {
+    var lines = html.split(/\r\n/),
+        i;
+    for (i = 0; i < lines.length; i++) {
+        lines[i] = fixHtmlToMarkdownCodeLine(lines[i]);
+    }
+    return lines.join('');
+};
+var convertHtmlToMarkdown = function (html) {
+    html = toMarkdown(html);
+    html = fixHtmlToMarkdownCodeLines(html);
+    return html;
+};
 var handlerSetupForMarkdownTab = function () {
     var pulseStormSwitchToMarkdown = function () {
         //moved most of this into onclick event handler aboveso it could access the page information.        
-        document.forms.post.content.value = toMarkdown(getContentFromEditor());
+        //document.forms.post.content.value = toMarkdown(getContentFromEditor());
+        document.forms.post.content.value = convertHtmlToMarkdown(getContentFromEditor());
     };
     document.getElementById('content-markdown').addEventListener('click', function () {
         pulseStormSwitchToMarkdown();
